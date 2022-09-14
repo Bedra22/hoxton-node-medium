@@ -10,13 +10,13 @@ app.use(express.json())
 const prisma = new PrismaClient({ log: ['warn', 'error', 'info', 'query'] })
 
 app.get('/posts', async (req, res) => {
-    const getPosts = await prisma.posts.findMany({ include: { comment: true } })
+    const getPosts = await prisma.posts.findMany({ include: { Users: true, comment: true } })
     res.send(getPosts)
 })
 
 app.get('/posts/:id', async (req, res) => {
     const id = Number(req.params.id)
-    const getPostsById = await prisma.posts.findUnique({ where: { id }, include: { comment: true } })
+    const getPostsById = await prisma.posts.findUnique({ where: { id }, include: { Users: true, comment: true } })
     if (getPostsById) {
         res.send(getPostsById)
     } else {
