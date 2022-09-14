@@ -20,6 +20,11 @@ app.get('/posts/:id', async (req, res) => {
     res.send(getPostsById)
 })
 
+app.post('/posts', async (req, res) => {
+    const getNewPost = await prisma.posts.create({ data: req.body, include: { comment: true } })
+    res.send(getNewPost)
+})
+
 
 app.listen(port, () => {
     console.log(`We are running on http://localhost:${port}`)
