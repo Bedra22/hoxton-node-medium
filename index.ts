@@ -24,6 +24,15 @@ app.post('/posts', async (req, res) => {
     const getNewPost = await prisma.posts.create({ data: req.body, include: { comment: true } })
     res.send(getNewPost)
 })
+app.get('/comments', async (req, res) => {
+    const getComments = await prisma.comments.findMany()
+    res.send(getComments)
+})
+
+app.post('/comments', async (req, res) => {
+    const addComment = await prisma.comments.create({ data: req.body, include: { Posts: true } })
+    res.send(addComment)
+})
 
 
 app.listen(port, () => {
