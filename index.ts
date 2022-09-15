@@ -45,7 +45,7 @@ app.post('/posts', async (req, res) => {
         errors.push("likesInTotal is not a number or not found")
     }
     if (errors.length === 0) {
-        const getNewPost = await prisma.posts.create({
+        await prisma.posts.create({
             data: {
                 imageContent: posting.imageContent,
                 writenContent: posting.writenContent,
@@ -54,7 +54,8 @@ app.post('/posts', async (req, res) => {
             },
             include: { comment: true }
         })
-        res.send(getNewPost)
+        const getPosts = await prisma.posts.findMany({ include: { Users: true, comment: true } })
+        res.send(getPosts)
     } else {
         res.status(400).send(errors)
     }
@@ -78,14 +79,16 @@ app.post('/comments', async (req, res) => {
         errors.push("PostsId is not a number or not found")
     }
     if (errors.length === 0) {
-        const addComment = await prisma.comments.create({
+        await prisma.comments.create({
             data: {
                 content: addingCommentsOnPosts.content,
                 postsId: addingCommentsOnPosts.postsId
             },
             include: { Posts: true }
         })
-        res.send(addComment)
+        const getComments = await prisma.comments.findMany({ include: { Posts: true } })
+
+        res.send(getComments)
     } else {
         res.status(400).send(errors)
     }
