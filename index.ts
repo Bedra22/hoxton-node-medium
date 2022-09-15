@@ -61,7 +61,7 @@ app.post('/posts', async (req, res) => {
 })
 
 app.get('/comments', async (req, res) => {
-    const getComments = await prisma.comments.findMany()
+    const getComments = await prisma.comments.findMany({ include: { Posts: true } })
     res.send(getComments)
 })
 
