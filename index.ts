@@ -24,42 +24,52 @@ app.get('/posts/:id', async (req, res) => {
     }
 })
 
+// app.post('/posts', async (req, res) => {
+//     const posting = {
+//         imageContent: req.body.imageContent,
+//         writenContent: req.body.writenContent,
+//         usersId: req.body.usersId,
+//         likesInTotal: req.body.likesInTotal
+//     }
+//     let errors: string[] = []
+//     if (typeof req.body.imageContent !== 'string') {
+//         errors.push("ImageContent is not a string or not found")
+//     }
+//     if (typeof req.body.writenContent !== 'string') {
+//         errors.push("WritenContent is not a string or not found")
+//     }
+//     if (typeof req.body.usersId !== 'number') {
+//         errors.push("UsersId is not a number or not found")
+//     }
+//     if (typeof req.body.likesInTotal !== 'number') {
+//         errors.push("likesInTotal is not a number or not found")
+//     }
+//     if (errors.length === 0) {
+//         const getNewPost = await prisma.posts.create({
+//             data: {
+//                 imageContent: posting.imageContent,
+//                 writenContent: posting.writenContent,
+//                 usersId: posting.usersId,
+//                 likesInTotal: posting.likesInTotal
+//             },
+//             include: { comment: true }
+//         })
+//         res.send(getNewPost)
+//     } else {
+//         res.status(400).send(errors)
+//     }
+// })
+
+
+
+
 app.post('/posts', async (req, res) => {
-    const posting = {
-        imageContent: req.body.imageContent,
-        writenContent: req.body.writenContent,
-        usersId: req.body.usersId,
-        likesInTotal: req.body.likesInTotal
-    }
-    let errors: string[] = []
-    if (typeof req.body.imageContent !== 'string') {
-        errors.push("ImageContent is not a string or not found")
-    }
-    if (typeof req.body.writenContent !== 'string') {
-        errors.push("WritenContent is not a string or not found")
-    }
-    if (typeof req.body.usersId !== 'number') {
-        errors.push("UsersId is not a number or not found")
-    }
-    if (typeof req.body.likesInTotal !== 'number') {
-        errors.push("likesInTotal is not a number or not found")
-    }
-    if (errors.length === 0) {
-        await prisma.posts.create({
-            data: {
-                imageContent: posting.imageContent,
-                writenContent: posting.writenContent,
-                usersId: posting.usersId,
-                likesInTotal: posting.likesInTotal
-            },
-            include: { comment: true }
-        })
-        const getPosts = await prisma.posts.findMany({ include: { Users: true, comment: true } })
-        res.send(getPosts)
-    } else {
-        res.status(400).send(errors)
-    }
+    await prisma.posts.create({ data: req.body, include: { comment: true } })
+    const getPosts = await prisma.posts.findMany({ include: { Users: true, comment: true } })
+    res.send(getPosts)
 })
+
+
 
 app.get('/comments', async (req, res) => {
     const getComments = await prisma.comments.findMany({ include: { Posts: true } })
